@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8fafc;
+      color: #333;
+      padding: 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .header {
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      color: #16a34a; /* green */
+    }
+    .btn {
+      display: inline-block;
+      background-color: #16a34a;
+      color: #fff;
+      padding: 12px 24px;
+      text-decoration: none;
+      border-radius: 6px;
+      margin-top: 20px;
+    }
+    .footer {
+      margin-top: 30px;
+      font-size: 12px;
+      text-align: center;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      {% if user.first_name %}
+        Welcome to Foodie Express, {{ user.first_name }} ({{ user.username }})! 🍔
+      {% else %}
+        Welcome to Foodie Express, {{ user.email }} ({{ user.username }})! 🍔
+      {% endif %}
+    </div>
+
+    <p>
+      {% if user.first_name %}
+        Hi {{ user.first_name }} ({{ user.username }}),
+      {% else %}
+        Hi {{ user.email }} ({{ user.username }}),
+      {% endif %}
+    </p>
+
+    <p>Thank you for registering at <strong>Foodie Express</strong>! We're excited to have you onboard.</p>
+    <p>Start exploring our delicious menu and enjoy a tasty experience.</p>
+
+    <a href="http://localhost:5173" class="btn">Visit Foodie Express</a>
+
+    <div class="footer">
+      &copy; 2025 Foodie Express. All rights reserved.
+    </div>
+  </div>
+</body>
+</html>
