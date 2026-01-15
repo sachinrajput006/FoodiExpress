@@ -1,26 +1,20 @@
 import React, { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import Nav from "../components/Nav";
-import { Categories } from "../Category";
 import Card from "../components/Card";
-import { food_items } from "../food";
-import { dataContext } from "../context/DataContext";
+import { dataContext } from "../context/context";
 import { RxCross2 } from "react-icons/rx";
+import { TiThSmallOutline } from "react-icons/ti";
 import Card2 from "../components/Card2";
 import { useSelector } from "react-redux";
-import { toast } from "react-toastify";
+
 
 const Home = () => {
-  const { cate, setCate, input, showCart, setShowCart } = useContext(dataContext);
+  const { cate, categories, input, showCart, setShowCart, filterByCategory } = useContext(dataContext);
+  const navigate = useNavigate();
 
-  const filter = (category) => {
-    if (category.toLowerCase() === "all") {
-      setCate(food_items);
-    } else {
-      const newList = food_items.filter(
-        (item) => item.food_category.toLowerCase() === category.toLowerCase()
-      );
-      setCate(newList);
-    }
+  const filter = (categoryName) => {
+    filterByCategory(categoryName);
   };
 
   let items = useSelector((state) => state.cart) || []; // ✅ safe fallback
@@ -36,13 +30,22 @@ const Home = () => {
 
       {!input && (
         <div className="flex flex-wrap justify-center items-center gap-4 md:gap-6 py-4 md:py-6 px-2 md:px-4">
-          {Categories.map((item) => (
+          <div
+            onClick={() => filter('all')}
+            className="flex flex-col items-center justify-center bg-white rounded-xl shadow p-3 md:p-4 hover:bg-green-200 transition cursor-pointer w-24 md:w-32"
+          >
+            <TiThSmallOutline className="w-[60px] h-[60px] text-green-500" />
+            <p className="mt-2 text-base md:text-lg font-semibold text-center">
+              All
+            </p>
+          </div>
+          {categories.map((item) => (
             <div
               key={item.id}
-              onClick={() => filter(item.filterKey)}
+              onClick={() => filter(item.name)}
               className="flex flex-col items-center justify-center bg-white rounded-xl shadow p-3 md:p-4 hover:bg-green-200 transition cursor-pointer w-24 md:w-32"
             >
-              {item.image}
+              <TiThSmallOutline className="w-[60px] h-[60px] text-green-500" />
               <p className="mt-2 text-base md:text-lg font-semibold text-center">
                 {item.name}
               </p>
@@ -57,11 +60,13 @@ const Home = () => {
           cate.map((item) => (
             <Card
               key={item.id}
-              name={item.food_name}
-              image={item.food_image}
+              name={item.name}
+              image={item.image}
               id={item.id}
               price={item.price}
-              type={item.food_type}
+              is_vegetarian={item.is_vegetarian}
+              is_vegan={item.is_vegan}
+              is_gluten_free={item.is_gluten_free}
             />
           ))
         ) : (
@@ -120,8 +125,8 @@ const Home = () => {
             <button
               className="w-full mt-6 py-3 bg-green-500 hover:bg-green-600 text-white text-lg font-semibold rounded-lg shadow transition-all duration-200 active:scale-95"
               onClick={() => {
-                toast.success("Order Placed Successfully!");
                 setShowCart(false);
+                navigate("/place-order");
               }}
             >
               Place Order

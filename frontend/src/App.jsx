@@ -1,6 +1,7 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+import { DataProvider } from "./context/dataContext";
 import Home from "./pages/Home";
 import Footer from "./pages/Footer";
 import Login from "./pages/Auth/Login";
@@ -13,37 +14,55 @@ import ResetPasswordConfirm from "./pages/Auth/ResetPasswordConfirm";
 import ResetPasswordSuccess from "./pages/Auth/ResetPasswordSuccess";
 import EmailSent from "./pages/Auth/EmailSent";
 import UpdateProfile from "./pages/Auth/UpdateProfile";
+import Order from "./pages/Order";
+import OrderDetails from "./pages/OrderDetails";
+import PlaceOrder from "./pages/PlaceOrder";
+import AdminOrders from "./pages/AdminOrders";
+import AdminOrderDetails from "./pages/AdminOrderDetails";
 
 const App = () => {
   return (
-    <div className="flex flex-col min-h-screen">
-      <div style={{ flex: 1 }}>
-        <Routes>
-          {/* Home */}
-          <Route path="/" element={<Home />} />
+    <DataProvider>
+      <div className="flex flex-col min-h-screen">
+        <div style={{ flex: 1 }}>
+          <Routes>
+            {/* Home */}
+            <Route path="/" element={<Home />} />
 
-          {/* Auth */}
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/update-profile" element={<UpdateProfile />} />
-          <Route path="/email-sent-success" element={<EmailSentSuccess />} />
-          <Route path="/reset-password" element={<PasswordReset />} />
-          <Route
-            path="/reset-password-confirm/:uidb64/:token"
-            element={<ResetPasswordConfirm />}
-          />
+            {/* Auth */}
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/update-profile" element={<UpdateProfile />} />
+            <Route path="/email-sent-success" element={<EmailSentSuccess />} />
+            <Route path="/reset-password" element={<PasswordReset />} />
+            <Route
+              path="/reset-password-confirm/:uidb64/:token"
+              element={<ResetPasswordConfirm />}
+            />
 
-          <Route path="/reset-password-success" element={<ResetPasswordSuccess />} />
-          <Route path="/email-sent" element={<EmailSent />} />
+            <Route path="/reset-password-success" element={<ResetPasswordSuccess />} />
+            <Route path="/email-sent" element={<EmailSent />} />
 
 
-        </Routes>
+            {/* Orders */}
+
+            <Route path="/orders" element={<Order />} />
+            <Route path="/orders/:id" element={<OrderDetails />} />
+            <Route path="/place-order" element={<PlaceOrder />} />
+
+            <Route path="/admin/orders" element={<AdminOrders />} />
+            <Route path="/admin/orders/:id" element={<AdminOrderDetails />} />
+
+
+
+          </Routes>
+        </div>
+        <ToastContainer />
+        <Footer />
       </div>
-      <ToastContainer />
-      <Footer />
-    </div>
+    </DataProvider>
   );
 };
 

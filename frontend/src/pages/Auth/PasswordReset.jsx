@@ -10,7 +10,7 @@ const PasswordReset = () => {
     try {
       await axios.post("http://127.0.0.1:8000/accounts/password-reset/", { email });
       setMessage("If the email exists, a reset link has been sent ✅");
-    } catch (err) {
+    } catch {
       setMessage("Something went wrong ❌");
     }
   };

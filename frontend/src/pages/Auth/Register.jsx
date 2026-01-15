@@ -34,7 +34,13 @@ const Register = () => {
       navigate("/email-sent?type=welcome");
     } catch (err) {
       console.error(err);
-      alert("Registration failed! Please check your details.");
+      if (err.response && err.response.data) {
+        const errors = err.response.data;
+        const errorMessages = Object.values(errors).flat().join('\n');
+        alert(`Registration failed:\n${errorMessages}`);
+      } else {
+        alert("Registration failed! Please check your details.");
+      }
     }
   };
 
@@ -88,6 +94,18 @@ const Register = () => {
             required
             className="w-full px-4 py-2 mb-4 border rounded-md"
           />
+          {/* Password Requirements */}
+          <div className="mb-4 p-3 bg-gray-50 rounded-md">
+            <p className="text-sm font-semibold mb-2">Password must contain:</p>
+            <ul className="text-xs text-gray-600 list-disc list-inside">
+              <li>At least 8 characters</li>
+              <li>At least one uppercase letter</li>
+              <li>At least one lowercase letter</li>
+              <li>At least one number</li>
+              <li>At least one special character (!@#$%^&* etc.)</li>
+            </ul>
+          </div>
+
           <input
             type="password"
             name="password"

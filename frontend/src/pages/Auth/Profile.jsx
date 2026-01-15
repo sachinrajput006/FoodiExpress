@@ -1,10 +1,28 @@
 import React, { useEffect, useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../../utils/api";
 import Nav from "../../components/Nav";
-import { dataContext } from "../../context/DataContext";
+import { dataContext } from "../../context/context";
+import defaultAvatar from "../../assets/default-avatar.png";
+
+const BACKEND_HOST = "http://127.0.0.1:8000";
+
+const resolveImageSrc = (img) => {
+  if (!img) return defaultAvatar;
+  if (typeof img === "string" && (img.startsWith("http://") || img.startsWith("https://") || img.startsWith("//"))) return img;
+  if (typeof img === "string") return `${BACKEND_HOST}${img.startsWith("/") ? "" : "/"}${img}`;
+  return defaultAvatar;
+};
 
 const Profile = () => {
   const { user, setUser } = useContext(dataContext);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+    }
+  }, [user, navigate]);
   const [profile, setProfile] = useState(null);
   const [activeTab, setActiveTab] = useState("about");
   const [loading, setLoading] = useState(true);
@@ -51,19 +69,21 @@ const Profile = () => {
 
   const handleUpdate = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem("access");
     try {
       const data = new FormData();
       Object.keys(formData).forEach((key) => data.append(key, formData[key]));
-      if (profilePicture instanceof File)
+      if (profilePicture instanceof File) {
         data.append("profile_picture", profilePicture);
+      }
 
-      const res = await api.put("/accounts/profile/update/", data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      // Debug: log FormData contents
+      for (let pair of data.entries()) {
+        console.log("FormData entry:", pair[0], pair[1]);
+      }
+
+      console.log("Sending profile update request...");
+      const res = await api.patch("/accounts/profile/update/", data);
+      console.log("Profile update response:", res);
       setProfile(res.data);
       setUser(res.data);
       setMessage("Profile updated successfully ✅");
@@ -89,11 +109,7 @@ const Profile = () => {
         {/* Header */}
         <div className="bg-white rounded-2xl shadow-lg p-8 flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8">
           <img
-            src={
-              profile.profile_picture
-                ? profile.profile_picture
-                : "/default-avatar.png" // ✅ fallback
-            }
+            src={resolveImageSrc(profile.profile_picture)}
             alt="Profile"
             className="w-36 h-36 rounded-full object-cover border-4 border-green-500 shadow-md"
           />

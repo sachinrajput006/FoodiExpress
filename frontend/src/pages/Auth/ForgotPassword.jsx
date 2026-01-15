@@ -19,7 +19,7 @@ const ForgotPassword = () => {
 
       // ✅ Redirect to EmailSent page with type=reset
       navigate("/email-sent?type=reset");
-    } catch (err) {
+    } catch {
       alert("Something went wrong. Try again.");
     } finally {
       setLoading(false);

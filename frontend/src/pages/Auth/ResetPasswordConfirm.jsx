@@ -35,13 +35,20 @@ const ResetPasswordConfirm = () => {
     }
 
     try {
-      await axios.post(
+      console.log("Sending password reset request for uidb64:", uidb64, "token:", token);
+      const response = await axios.post(
         `http://127.0.0.1:8000/accounts/password-reset-confirm/${uidb64}/${token}/`,
         { new_password: newPassword }
       );
+      console.log("Password reset response:", response.data);
       navigate("/reset-password-success"); // ✅ fixed path
-    } catch (err) {
-      setError("Invalid or expired link ❌");
+    } catch (error) {
+      console.log("Password reset error:", error);
+      if (error.response && error.response.data && error.response.data.error) {
+        setError(error.response.data.error);
+      } else {
+        setError("An error occurred. Please try again.");
+      }
     }
   };
 

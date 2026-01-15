@@ -4,7 +4,7 @@ import { IoSearch } from "react-icons/io5";
 import { FiShoppingBag } from "react-icons/fi";
 import { HiMenu, HiX } from "react-icons/hi";
 import { FaUserCircle } from "react-icons/fa";
-import { dataContext } from "../context/DataContext";
+import { dataContext } from "../context/context";
 import { useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 
@@ -16,11 +16,43 @@ const Nav = () => {
   const [mobileMenu, setMobileMenu] = useState(false);
   const [dropdown, setDropdown] = useState(false);
 
+  const BACKEND_HOST = "http://127.0.0.1:8000";
+  const resolveImage = (img) => {
+    if (!img) return null;
+    if (typeof img === "string" && (img.startsWith("http://") || img.startsWith("https://") || img.startsWith("//"))) return img;
+    if (typeof img === "string") return `${BACKEND_HOST}${img.startsWith("/") ? "" : "/"}${img}`;
+    return null;
+  };
+
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("refreshToken");
-    setUser(null);
-    navigate("/login");
+    (async () => {
+      try {
+        const refresh = localStorage.getItem("refresh");
+        // Call backend to blacklist refresh token
+        if (refresh) {
+          // use fetch to avoid depending on api instance here
+          await fetch("http://127.0.0.1:8000/accounts/logout/", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: localStorage.getItem("access")
+                ? `Bearer ${localStorage.getItem("access")}`
+                : undefined,
+            },
+            body: JSON.stringify({ refresh }),
+          });
+        }
+      } catch (e) {
+        console.error("Backend logout failed:", e);
+      } finally {
+        // Always clear client-side tokens
+        localStorage.removeItem("access");
+        localStorage.removeItem("refresh");
+        localStorage.removeItem("user");
+        setUser(null);
+        navigate("/login");
+      }
+    })();
   };
 
   return (
@@ -47,6 +79,7 @@ const Nav = () => {
             className="w-full bg-transparent outline-none text-[15px]"
             value={input}
             onChange={(e) => setInput(e.target.value)}
+            autoComplete="off"
           />
         </form>
 
@@ -67,10 +100,14 @@ const Nav = () => {
           {user ? (
             <div className="relative">
               <div
-                className="w-[45px] h-[45px] bg-green-600 text-white flex justify-center items-center rounded-full cursor-pointer font-bold hover:scale-105 transition"
+                className={`w-[45px] h-[45px] ${user?.profile_picture ? '' : 'bg-green-600 text-white'} flex justify-center items-center rounded-full cursor-pointer font-bold hover:scale-105 transition`}
                 onClick={() => setDropdown(!dropdown)}
               >
-                {user?.first_name ? user.first_name[0].toUpperCase() : <FaUserCircle className="w-[26px] h-[26px]" />}
+                {user?.profile_picture ? (
+                  <img src={resolveImage(user.profile_picture)} alt="profile" className="w-full h-full rounded-full object-cover" />
+                ) : (
+                  user?.first_name?.trim() ? user.first_name[0].toUpperCase() : (user?.username ? user.username[0].toUpperCase() : <FaUserCircle className="w-[26px] h-[26px]" />)
+                )}
               </div>
 
               {dropdown && (

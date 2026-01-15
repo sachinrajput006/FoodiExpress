@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../utils/api";
 import Nav from "../../components/Nav";
-import { dataContext } from "../../context/DataContext";
+import { dataContext } from "../../context/context";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -24,6 +24,7 @@ const Login = () => {
 
       localStorage.setItem("access", res.data.access);
       localStorage.setItem("refresh", res.data.refresh);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
 
       // If your backend returns user info
       setUser(res.data.user || null);

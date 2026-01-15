@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { food_items } from "../food";
 import api from "../utils/api";
-import { dataContext } from "./DataContext";
+import { dataContext } from "./context";
 
 const UserContext = ({ children }) => {
   const [cate, setCate] = useState(food_items);

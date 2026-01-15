@@ -2,12 +2,27 @@ import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Nav from "../../components/Nav";
-import { dataContext } from "../../context/DataContext";
+import { dataContext } from "../../context/context";
 import defaultAvatar from "../../assets/default-avatar.png"; // ✅ Make sure this file exists
+
+const BACKEND_HOST = "http://127.0.0.1:8000";
+
+const resolveImageSrc = (img) => {
+  if (!img) return defaultAvatar;
+  if (typeof img === "string" && (img.startsWith("http://") || img.startsWith("https://") || img.startsWith("//"))) return img;
+  if (typeof img === "string") return `${BACKEND_HOST}${img.startsWith("/") ? "" : "/"}${img}`;
+  return defaultAvatar;
+};
 
 const UpdateProfile = () => {
   const { user, setUser } = useContext(dataContext);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+    }
+  }, [user, navigate]);
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
@@ -63,19 +78,26 @@ const UpdateProfile = () => {
     try {
       const data = new FormData();
       Object.keys(formData).forEach((key) => data.append(key, formData[key]));
-      if (profilePicture instanceof File)
+      if (profilePicture instanceof File) {
         data.append("profile_picture", profilePicture);
+      }
 
-      const res = await axios.put(
+      // Debug: log FormData contents
+      for (let pair of data.entries()) {
+        console.log("FormData entry:", pair[0], pair[1]);
+      }
+
+      console.log("Sending update request...");
+      const res = await axios.patch(
         "http://127.0.0.1:8000/accounts/profile/update/",
         data,
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
           },
         }
       );
+      console.log("Update response:", res);
 
       setUser(res.data);
       setMessage("Profile updated successfully ✅");
@@ -128,7 +150,9 @@ const UpdateProfile = () => {
             src={
               profilePicture instanceof File
                 ? URL.createObjectURL(profilePicture)
-                : profilePicture || defaultAvatar
+                : profilePicture
+                ? resolveImageSrc(profilePicture)
+                : defaultAvatar
             }
             alt="Profile"
             className="w-32 h-32 rounded-full object-cover border-4 border-green-500 shadow-md mb-3"
