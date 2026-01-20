@@ -31,10 +31,11 @@ INSTALLED_APPS = [
     'corsheaders',
     'accounts',
     'menus',
-    'orders',
+    'orders.apps.OrdersConfig', 
     'products',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
+    
 ]
 
 MIDDLEWARE = [
@@ -55,8 +56,7 @@ ROOT_URLCONF = 'backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'DIRS': [BASE_DIR / "templates"], 
+        'DIRS': [BASE_DIR / "templates"],  # ✅ ONLY THIS
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
