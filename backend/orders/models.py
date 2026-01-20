@@ -59,6 +59,25 @@ class OrderItem(models.Model):
     @property
     def total_price(self):
         return self.quantity * self.price
+    
+    from django.conf import settings
+from django.db import models
+
+class OrderRating(models.Model):
+    order = models.OneToOneField(
+        "Order",
+        on_delete=models.CASCADE,
+        related_name="rating"
+    )
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    rating = models.PositiveSmallIntegerField()
+    review = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Order #{self.order.id} - {self.rating}⭐"
+
+
 
     def __str__(self):
         return f"{self.quantity} x {self.menu.name}"

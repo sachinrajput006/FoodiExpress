@@ -5,6 +5,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import ListAPIView, RetrieveAPIView, UpdateAPIView
 from django.shortcuts import get_object_or_404
 from django.db import transaction
+from rest_framework.decorators import action
+from rest_framework import viewsets
 from .models import Order, OrderItem
 from .serializers import (
     OrderSerializer,
@@ -12,6 +14,8 @@ from .serializers import (
     UpdateOrderStatusSerializer,
     OrderItemSerializer
 )
+
+
 from menus.models import Menu, MenuVariation
 
 
@@ -51,22 +55,15 @@ class AdminOrderListAPIView(ListAPIView):
         return Order.objects.all().order_by('-created_at')
 
 
+
 class UpdateOrderStatusAPIView(UpdateAPIView):
     serializer_class = UpdateOrderStatusSerializer
     permission_classes = [IsAuthenticated]
     queryset = Order.objects.all()
 
+    def perform_update(self, serializer):
+        order = serializer.save()
 
-class CancelOrderView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def patch(self, request, pk):
-        order = get_object_or_404(Order, pk=pk, user=request.user)
-        if order.status in ['delivered', 'cancelled']:
-            return Response({'error': 'Cannot cancel this order'}, status=status.HTTP_400_BAD_REQUEST)
-        order.status = 'cancelled'
-        order.save()
-        return Response({'message': 'Order cancelled successfully'})
 
 
 class ReOrderView(APIView):
@@ -120,3 +117,29 @@ class OrderInvoiceView(APIView):
         order = get_object_or_404(Order, pk=pk, user=request.user)
         serializer = OrderSerializer(order)
         return Response(serializer.data)
+
+class CancelOrderView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, pk):
+        return self.cancel(request, pk)
+
+    def post(self, request, pk):
+        return self.cancel(request, pk)
+
+    def cancel(self, request, pk):
+        order = get_object_or_404(Order, pk=pk, user=request.user)
+
+        if order.status not in ["placed", "confirmed"]:
+            return Response(
+                {"error": "Order cannot be cancelled now"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        order.status = "cancelled"
+        order.save()
+
+        return Response(
+            {"message": "Order cancelled successfully"},
+            status=status.HTTP_200_OK
+        )

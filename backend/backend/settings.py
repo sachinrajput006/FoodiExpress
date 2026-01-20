@@ -166,13 +166,13 @@ AUTH_USER_MODEL = "accounts.CustomUser"
 
 
 # Email Settings (Gmail Example)
-DEFAULT_FROM_EMAIL = "noreply@foodieexpress.com"
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = "sachinrajput30881@gmail.com"
-EMAIL_HOST_PASSWORD = "chggjhfgfhgj"  # App password (not normal Gmail pwd)
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = "rricvtbmyhagqbki"  # App password (not normal Gmail pwd)
+DEFAULT_FROM_EMAIL = "FoodieExpress <sachinrajput30881@gmail.com>"
+
 
 FRONTEND_URL = "http://localhost:5173"  # ya jo bhi tumhara React ka URL hai
