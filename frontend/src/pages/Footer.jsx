@@ -15,8 +15,8 @@ const Footer = () => {
         <div style={{ flex: "1 1 250px", marginBottom: "20px" }}>
           <h4 style={{ marginBottom: "15px" }}>Contact</h4>
           <p>Email: support@foodieexpress.com</p>
-          <p>Phone: +91 123 456 7890</p>
-          <p>Address: 123, Food Street, Your City</p>
+          <p>Phone: +91 9870941367</p>
+          <p>Address: 123, FoodieExpress Shikohabad</p>
         </div>
 
         {/* Social Media Section */}
