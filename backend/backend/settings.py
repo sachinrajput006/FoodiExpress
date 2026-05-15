@@ -1,5 +1,3 @@
-
-
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -31,6 +29,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'accounts',
     'menus',
+    'payments',
     'orders.apps.OrdersConfig', 
     'products',
     'rest_framework_simplejwt',
@@ -171,7 +170,7 @@ EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = "sachinrajput30881@gmail.com"
-EMAIL_HOST_PASSWORD = "rricvtbmyhagqbki"  # App password (not normal Gmail pwd)
+EMAIL_HOST_PASSWORD = "vvuf qopp dlgv vjae"  # App password (not normal Gmail pwd)
 DEFAULT_FROM_EMAIL = "FoodieExpress <sachinrajput30881@gmail.com>"
 
 

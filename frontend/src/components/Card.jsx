@@ -9,7 +9,7 @@ const Card = ({ name, image, id, price, is_vegetarian, is_vegan }) => {
   let dispatch = useDispatch();
 
   const getTypeIcon = () => {
-    if (is_vegan) return <LuLeafyGreen className="text-xl" />;
+    if (is_vegan) return <LuLeafyGreen className="text-xl " />;
     if (is_vegetarian) return <LuLeafyGreen className="text-xl" />;
     return <GiChickenOven className="text-xl" />;
   };
@@ -22,11 +22,14 @@ const Card = ({ name, image, id, price, is_vegetarian, is_vegan }) => {
 
   return (
     <div
-      className="w-[280px] sm:w-[300px] h-auto bg-white dark:bg-gray-800 rounded-xl
-                 shadow-lg hover:shadow-2xl flex flex-col p-5 justify-between
-                 transition-all duration-300 hover:scale-[1.02] cursor-pointer
-                 hover:border-2 border-green-400 dark:border-gray-600 group
-                 border border-gray-200 dark:border-gray-700"
+      className="w-full max-w-[280px] sm:max-w-[300px] h-auto 
+             bg-white dark:bg-gray-800 rounded-xl
+             shadow-lg hover:shadow-2xl flex flex-col 
+             p-3 justify-center items-center 
+             transition-all duration-300 hover:scale-[1.02] 
+             cursor-pointer hover:border-2 border-green-400 
+             dark:border-gray-600 group
+             border border-gray-200 dark:border-gray-700"
     >
       {/* Image */}
       <div
@@ -54,8 +57,10 @@ const Card = ({ name, image, id, price, is_vegetarian, is_vegan }) => {
 
       {/* Button */}
       <button
-        onClick={()=>{ dispatch(Additem({id:id, name:name, image:image, price:price, qty:1 }))
-      toast.success("Item added to cart")}}
+        onClick={() => {
+          dispatch(Additem({ id: id, name: name, image: image, price: price, qty: 1 }))
+          toast.success("Item added to cart")
+        }}
         className="mt-6 bg-green-500 hover:bg-green-600 text-white 
                    font-semibold py-2 rounded-md shadow w-full 
                    transition-all duration-200"

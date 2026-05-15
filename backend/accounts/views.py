@@ -87,7 +87,7 @@ class LogoutView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-# Profile View
+# ✅ Profile View
 
 class ProfileView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated]
@@ -97,7 +97,7 @@ class ProfileView(generics.RetrieveAPIView):
         return self.request.user
 
 
-# Update Profile
+# ✅ Update Profile
 class ProfileUpdateView(generics.UpdateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = UserSerializer
